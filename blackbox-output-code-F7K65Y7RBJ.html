@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Fiesta de 15! - Confirmación de Asistencia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            background-size: cover;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #d63384, #e91e63);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(214, 51, 132, 0.3);
+            width: 280px;
+            max-width: 90%;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(214, 51, 132, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-group {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .form-group.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1.1em;
+            margin: 10px 0;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #d63384;
+            box-shadow: 0 0 0 3px rgba(214, 51, 132, 0.1);
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .admin-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .admin-list {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .admin-list h3 {
+            color: #d63384;
+            margin-bottom: 15px;
+        }
+
+        .guest-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #d63384;
+        }
+
+        .links {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-btn {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            padding: 15px;
+            text-decoration: none;
+            color: white;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,123,255,0.3);
+        }
+
+        .password-form {
+            margin: 20px 0;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <!-- Pantalla principal -->
+        <div id="welcomeScreen">
+            <h1>🎂 ¡Feliz 15!</h1>
+            <p class="subtitle">¡Confirma tu asistencia a la fiesta más increíble!</p>
+            
+            <div class="links">
+                <a href="#" class="link-btn" onclick="showGuestView()">
+                    🎉 ENTRAR COMO INVITADO
+                </a>
+                <a href="#" class="link-btn" onclick="showAdminPassword()">
+                    🔐 PANEL ADMINISTRADOR
+                </a>
+            </div>
+        </div>
+
+        <!-- Formulario contraseña admin -->
+        <div id="adminPasswordScreen" style="display: none;">
+            <h1>🔐 Acceso Administrador</h1>
+            <div class="password-form">
+                <input type="password" id="adminPassword" placeholder="Ingresa la contraseña" maxlength="20">
+                <button class="btn" onclick="checkAdminPassword()">Acceder</button>
+                <div class="error" id="passwordError">❌ Contraseña incorrecta</div>
+                <button class="btn" onclick="backToWelcome()" style="background: #6c757d; margin-top: 10px;">← Volver</button>
+            </div>
+        </div>
+
+        <!-- Vista de Invitado -->
+        <div id="guestView" style="display: none;">
+            <h1>🎂 ¡Feliz 15!</h1>
+            <p class="subtitle">¡Confirma tu asistencia!</p>
+            
+            <button class="btn" id="confirmBtn">✅ Confirmar Asistencia</button>
+            
+            <div class="form-group" id="nameForm">
+                <input type="text" id="fullName" placeholder="Escribe tu Nombre Completo" maxlength="50">
+                <button class="btn" onclick="saveGuest()">Guardar y Continuar</button>
+            </div>
+
+            <div class="success" id="successMsg">
+                ✅ ¡Tu asistencia ha sido confirmada! 
+                <br><strong id="savedName"></strong>
+            </div>
+
+            <div id="mainButtons" style="display: none;">
+                <button class="btn" onclick="showDietForm()">🥗 Dieta Especial</button>
+                <button class="btn" onclick="openMaps()">📍 Ver Ubicación</button>
+                <button class="btn" onclick="backToWelcome()" style="background: #6c757d;">← Volver</button>
+            </div>
+
+            <!-- Formulario Dieta Especial -->
+            <div class="form-group" id="dietForm">
+                <p>¿Tienes alguna dieta especial? (vegana, vegetariana, celíaca, etc.)</p>
+                <input type="text" id="dietInfo" placeholder="Describe tu dieta especial">
+                <button class="btn" onclick="saveDiet()">Guardar Dieta</button>
+                <button class="btn" onclick="hideDietForm()" style="background: #6c757d;">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- Vista de Administrador -->
+        <div id="adminView" style="display: none;">
+            <h1>🔐 Panel Administrador</h1>
+            <div class="admin-list">
+                <h3>📋 Confirmados (<span id="totalConfirmed">0</span>)</h3>
+                <div id="confirmedList"></div>
+            </div>
+            <div class="admin-list">
+                <h3>🥗 Dietas Especiales (<span id="totalDiets">0</span>)</h3>
+                <div id="dietList"></div>
+            </div>
+            <button class="btn" onclick="clearAllData()" style="background: #dc3545; width: 200px;">🗑️ Limpiar Todo</button>
+            <button class="btn" onclick="backToWelcome()" style="background: #6c757d; width: 200px; margin-left: 10px;">← Salir</button>
+        </div>
+    </div>
+
+    <script>
+        // CONTRASEÑA ADMIN
+        const ADMIN_PASSWORD = "Sara2026";
+        
+        // Almacenamiento local
+        let confirmedGuests = JSON.parse(localStorage.getItem('confirmedGuests')) || [];
+        let specialDiets = JSON.parse(localStorage.getItem('specialDiets')) || [];
+        let currentGuest = null;
+
+        // Pantalla de bienvenida
+        function backToWelcome() {
+            document.getElementById('welcomeScreen').style.display = 'block';
+            document.getElementById('adminPasswordScreen').style.display = 'none';
+            document.getElementById('guestView').style.display = 'none';
+            document.getElementById('adminView').style.display = 'none';
+            resetForms();
+        }
+
+        // Mostrar formulario contraseña admin
+        function showAdminPassword() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('adminPasswordScreen').style.display = 'block';
+        }
+
+        // Verificar contraseña admin
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('adminPasswordScreen').style.display = 'none';
+                document.getElementById('adminView').style.display = 'block';
+                updateAdminLists();
+                document.getElementById('adminPassword').value = '';
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('passwordError').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Vista invitado
+        function showGuestView() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('guestView').style.display = 'block';
+        }
+
+        // Resetear formularios
+        function resetForms() {
+            document.getElementById('confirmBtn').style.display = 'block';
+            document.getElementById('nameForm').classList.remove('active');
+            document.getElementById('successMsg').style.display = 'none';
+            document.getElementById('mainButtons').style.display = 'none';
+            document.getElementById('dietForm').classList.remove('active');
+            document.getElementById('fullName').value = '';
+            document.getElementById('dietInfo').value = '';
+            currentGuest = null;
+        }
+
+        // Confirmar asistencia
+        document.getElementById('confirmBtn').onclick = function() {
+            document.getElementById('confirmBtn').style.display = 'none';
+            document.getElementById('nameForm').classList.add('active');
+        };
+
+        // Enter en contraseña admin
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAdminPassword();
+            }
+        });
+
+        // Guardar invitado
+        function saveGuest() {
+            const name = document.getElementById('fullName').value.trim();
+            if (name) {
+                currentGuest = name;
+                confirmedGuests.push(name);
+                localStorage.setItem('confirmedGuests', JSON.stringify(confirmedGuests));
+                
+                document.getElementById('savedName').textContent = name;
+                document.getElementById('successMsg').style.display = 'block';
+                document.getElementById('nameForm').classList.remove('active');
+                document.getElementById('mainButtons').style.display = 'block';
+            } else {
+                alert('Por favor, escribe tu nombre completo');
+            }
+        }
+
+        // Dieta especial
+        function showDietForm() {
+            document.getElementById('dietForm').classList.add('active');
+        }
+
+        function hideDietForm() {
+            document.getElementById('dietForm').classList.remove('active');
+        }
+
+        function saveDiet() {
+            const diet = document.getElementById('dietInfo').value.trim();
+            if (diet && currentGuest) {
+                specialDiets.push(`${currentGuest}: ${diet}`);
+                localStorage.setItem('specialDiets', JSON.stringify(specialDiets));
+                alert('✅ ¡Dieta especial guardada!');
+                document.getElementById('dietForm').classList.remove('active');
+                document.getElementById('dietInfo').value = '';
+            } else if (!diet) {
+                alert('Por favor, describe tu dieta especial');
+            }
+        }
+
+        // 🗺️ UBICACIÓN ACTUALIZADA
+        function openMaps() {
+            window.open('https://maps.app.goo.gl/E7KchiZa2uGNqmCW6?g_st=ac', '_blank');
+        }
+
+        // Panel admin
+        function updateAdminLists() {
+            document.getElementById('confirmedList').innerHTML = confirmedGuests.length 
+                ? confirmedGuests.map((name, index) => `<div class="guest-item">${index + 1}. ${name}</div>`).join('')
+                : '<div class="guest-item">👤 No hay confirmaciones aún</div>';
+            
+            document.getElementById('dietList').innerHTML = specialDiets.length 
+                ? specialDiets.map((diet, index) => `<div class="guest-item">${index + 1}. ${diet}</div>`).join('')
+                : '<div class="guest-item">🥗 No hay dietas especiales</div>';
+            
+            document.getElementById('totalConfirmed').textContent = confirmedGuests.length;
+            document.getElementById('totalDiets').textContent = specialDiets.length;
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ ¿Eliminar TODOS los datos de confirmaciones?')) {
+                confirmedGuests = [];
+                specialDiets = [];
+                localStorage.removeItem('confirmedGuests');
+                localStorage.removeItem('specialDiets');
+                updateAdminLists();
+                alert('🗑️ Datos eliminados correctamente');
+            }
+        }
+
+        // Cambiar fondo con parámetro URL (opcional)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('bg')) {
+            document.body.style.backgroundImage = `url(${urlParams.get('bg')})`;
+            document.body.style.backgroundSize = 'cover';
+        }
+    </script>
+</body>
+</html>
